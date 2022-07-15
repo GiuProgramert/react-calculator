@@ -16,7 +16,6 @@ function EqualButton({ display, setDisplay, lastIsOperation, setLastIsOperation 
     
     const isSecondLevelOperator = (displayValue) => {
         return displayValue === "+" || displayValue === "-";
-
     }
 
     const isFirstLevelOperator = (displayValue) => {
@@ -24,12 +23,14 @@ function EqualButton({ display, setDisplay, lastIsOperation, setLastIsOperation 
     }
     
     const resolveFirstLevelOperations = (displayValues) => {
-        let resolvedDisplayValues = [];
+        let resolvedDisplayValues = displayValues.slice();
         let operator = undefined;
         let number1 = undefined;
         let number2 = undefined;
         let result = undefined;
-        debugger;
+        let indexNumber1 = Number();
+        let indexNumber2 = Number();
+
         displayValues.forEach((displayValue, index) => {
             if (isFirstLevelOperator(displayValue)) {
                 operator = displayValue
@@ -41,14 +42,20 @@ function EqualButton({ display, setDisplay, lastIsOperation, setLastIsOperation 
 
             if (number1) {
                 number2 = displayValue;
+                indexNumber2 = index;
             } else {
                 number1 = displayValue;
+                indexNumber2 = index;
             }
 
             if (operator && number1 && number2) {
-                // todo indice del primer elemento para guardar el string correctamente
+                debugger;
                 result = makeOperation(operator, number1, number2);
-                resolvedDisplayValues = [result, ...displayValues.slice(index + 1)];
+                resolvedDisplayValues = [
+                    ...resolvedDisplayValues.slice(0, indexNumber1),
+                    result, 
+                    ...resolvedDisplayValues.slice(indexNumber2 + 1)
+                ];
                 
                 operator = undefined;
                 number1 = undefined;
@@ -60,13 +67,32 @@ function EqualButton({ display, setDisplay, lastIsOperation, setLastIsOperation 
         return resolvedDisplayValues
     }
     
+    const getOperations = (displayValues) => {
+        return displayValues
+            .filter((operation, index) => {
+                if (
+                    isFirstLevelOperator(operation) ||
+                    isSecondLevelOperator(operation)
+                ) {
+                    return { operation, index }
+                }
+            });
+    }
+
+    const resolve = (displayValues) => {
+        let existSecondLevelOp = false;
+        let operations = getOperations(displayValues);
+
+        // todo conseguir separar el array para hacer la logica
+    }
+
     const handleClick = () => {
         let displayValues = display.split(" ");
 
-        displayValues = resolveFirstLevelOperations(displayValues);
+        // displayValues = resolveFirstLevelOperations(displayValues);
         // displayValues = resolveSecondLevelOperations(displayValues);
-        console.log(displayValues)
-        setDisplay(displayValues.join(" "))
+        // console.log(displayValues)
+        // setDisplay(displayValues.join(" "))
     }
     
     return <button onClick={handleClick} className="operation">=</button>;
