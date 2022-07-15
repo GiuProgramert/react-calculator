@@ -1,5 +1,5 @@
 # React Calculator
-Maded to learn about react useState an implement a good logic to make operations
+Made to learn about react useState an implement a good logic to make operations
 
 ## Available Scripts
 
